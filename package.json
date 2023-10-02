@@ -1,8 +1,8 @@
 {
-    "name": "folody-server-bot",
-    "module": "Folody.ts",
+    "name": "timed-bot",
+    "module": "bot.ts",
     "type": "module",
-    "version": "0.11.1",
+    "version": "0.1.0",
     "devDependencies": {
         "@typescript-eslint/eslint-plugin": "^5.55.0",
         "@typescript-eslint/parser": "^5.55.0",
@@ -20,6 +20,8 @@
         "preinstall": "npx only-allow pnpm",
         "start": "tsx bot",
         "dev": "tsx watch bot",
-        "init": "pnpm i && cp -n config.example.ts config.ts"
+        "init": "pnpm i && cp -n config.example.ts config.ts",
+        "build-docker": "docker build -t timed-bot .",
+        "start-docker": "docker run -v ./config.ts:/app/config.ts -d --name timed-bot timed-bot"
     }
 }
