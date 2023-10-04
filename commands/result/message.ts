@@ -1,7 +1,6 @@
 import {
   ActionRowBuilder,
   ChannelType,
-  ComponentType,
   ModalBuilder,
   TextInputBuilder,
   TextInputStyle,
@@ -33,6 +32,7 @@ export default new Command({
     ]);
 
     const modal = new ModalBuilder()
+      .setCustomId("modal")
       .setTitle("Message content")
       .addComponents(
         new ActionRowBuilder<TextInputBuilder>().addComponents(
@@ -46,15 +46,19 @@ export default new Command({
       );
 
     await interaction.showModal(modal);
-    const message = (
-      await interaction.awaitModalSubmit({
-        time: 1000 * 60 * 30, // 30 minutes
-        componentType: ComponentType.TextInput,
-      })
-    ).fields.getField("content").value;
+    const modalResult = await interaction.awaitModalSubmit({
+      time: 1000 * 60 * 30,
+    });
 
-    eventSetups.get(interaction.user.id)!.results.push(async () => {
-      await channel.send(message);
+    eventSetups
+      .get(interaction.user.id)!
+      .results.push(() =>
+        channel.send(modalResult.fields.getTextInputValue("content"))
+      );
+
+    modalResult.reply({
+      content: "Message will be sent when the event is triggered.",
+      ephemeral: true,
     });
   },
 });

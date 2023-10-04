@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "discord.js";
 import { Command } from "modules/command";
-import { eventSetups } from "modules/states";
+import { eventSetups, events } from "modules/states";
 
 export default new Command({
   data: new SlashCommandBuilder()
@@ -19,6 +19,8 @@ export default new Command({
     event.start();
 
     eventSetups.delete(interaction.user.id);
+
+    events.set(interaction.user.id, event);
 
     interaction.reply({
       content: "Started event",

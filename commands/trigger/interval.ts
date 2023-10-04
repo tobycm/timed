@@ -22,12 +22,7 @@ export default new Command({
     )
     .toJSON(),
   async completion(interaction) {
-    const { name, value } = interaction.options.getFocused(true);
-    if (name !== "interval") return;
-
-    const interval = Number(value);
-
-    if (interval < 0) return;
+    const interval = interaction.options.getNumber("interval", true);
 
     interaction.respond([
       {
@@ -36,15 +31,25 @@ export default new Command({
       },
     ]);
   },
-  checks: [checkInSetup],
+  checks: [
+    checkInSetup,
+    async (interaction) => {
+      const interval = interaction.options.getNumber("interval", true);
+
+      if (interval > 0) return true;
+
+      if (interaction.isCommand())
+        await interaction.reply({
+          content: "Interval must be a positive number",
+          ephemeral: true,
+        });
+      else interaction.respond([]);
+
+      return false;
+    },
+  ],
   async run(interaction) {
     const interval = interaction.options.getNumber("interval", true);
-
-    if (interval < 0)
-      return interaction.reply({
-        content: "Interval must be a positive number",
-        ephemeral: true,
-      });
 
     eventSetups
       .get(interaction.user.id)!

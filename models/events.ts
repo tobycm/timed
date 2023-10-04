@@ -1,36 +1,60 @@
 import { Trigger } from "./triggers";
 
-interface TriggerEventOptions {
+interface EventOptions {
   name: string;
   description: string;
-  triggers?: Trigger[];
   results?: (() => Promise<any>)[];
 }
-
-export class TriggerEvent {
-  constructor(options: TriggerEventOptions) {
+class Event {
+  constructor(options: EventOptions) {
     this.name = options.name;
     this.description = options.description;
-    this.triggers = options.triggers || [];
-    this.results = options.results || [];
+    this.results = options.results ?? [];
   }
 
   public name: string;
   public description: string;
 
-  public triggers: Trigger[];
+  public running: boolean = false;
+
+  public results: (() => Promise<any>)[] = [];
 
   public async runResults(): Promise<any> {
-    for (const result of this.results) {
-      await result();
-    }
+    this.results.forEach(async (result) => await result());
   }
 
   public async start(): Promise<void> {
+    this.running = true;
+  }
+
+  public async stop(): Promise<void> {
+    this.running = false;
+  }
+}
+
+interface TriggerEventOptions extends EventOptions {
+  triggers?: Trigger[];
+}
+
+export class TriggerEvent extends Event {
+  constructor(options: TriggerEventOptions) {
+    super(options);
+    this.triggers = options.triggers || [];
+  }
+
+  public triggers: Trigger[];
+
+  async start(): Promise<void> {
+    this.running = true;
     for (const trigger of this.triggers) {
       await trigger.start(this.runResults);
     }
   }
 
-  public results: (() => Promise<any>)[];
+  async stop(): Promise<void> {
+    this.running = false;
+    for (const trigger of this.triggers) {
+      await trigger.stop();
+    }
+  }
 }
