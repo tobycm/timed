@@ -53,7 +53,9 @@ export default new Command({
 
     eventSetups
       .get(interaction.user.id)!
-      .triggers.push(new IntervalTrigger(interval * 1000));
+      .addTrigger(new IntervalTrigger(interval * 1000));
+
+    console.log(eventSetups.get(interaction.user.id));
 
     interaction.reply({
       content: `Added interval trigger ${inlineCode(secondsToTime(interval))}`,

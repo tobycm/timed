@@ -52,9 +52,11 @@ export default new Command({
 
     eventSetups
       .get(interaction.user.id)!
-      .results.push(() =>
+      .addOutput(() =>
         channel.send(modalResult.fields.getTextInputValue("content"))
       );
+
+    console.log(eventSetups.get(interaction.user.id));
 
     modalResult.reply({
       content: "Message will be sent when the event is triggered.",
