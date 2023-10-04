@@ -1,6 +1,6 @@
 import { SlashCommandBuilder } from "discord.js";
 import { Command } from "modules/command";
-import { setups as eventSetups } from "modules/states";
+import { eventSetups } from "modules/states";
 
 export default new Command({
   data: new SlashCommandBuilder()

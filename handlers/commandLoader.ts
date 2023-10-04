@@ -13,6 +13,9 @@ export default async function loadCommands(bot: Bot) {
         loadCommand(newRoot, item)
       );
     }
+
+    if (!item.endsWith(".ts")) return;
+
     const command = (await import(`.${root}${item}`)).default;
     if (command instanceof Command)
       return bot.commands.set(command.data.name, command);

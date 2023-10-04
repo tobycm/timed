@@ -7,12 +7,16 @@ export default new Event({
   async run(message) {
     if (!message.client.owners.includes(message.author.id)) return;
 
-    if (message.content !== "deploy") return;
+    if (!message.mentions.has(message.client.user)) return;
 
-    const commands: (typeof Command.prototype.data)[] = [];
-    message.client.commands.forEach((command) => commands.push(command.data));
-    message.client.application?.commands.set(commands);
+    if (message.content.endsWith("deploy")) {
+      const commands: (typeof Command.prototype.data)[] = [];
+      message.client.commands.forEach((command) => commands.push(command.data));
+      message.client.application?.commands.set(commands);
 
-    message.reply("Đã deploy slash commands");
+      return message.reply("Đã deploy slash commands");
+    }
+
+    return message.reply("hi :3");
   },
 });

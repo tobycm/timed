@@ -3,4 +3,4 @@
 import { Snowflake } from "discord.js";
 import { TriggerEvent } from "models/events";
 
-export const setups: Map<Snowflake, TriggerEvent> = new Map();
+export const eventSetups: Map<Snowflake, TriggerEvent> = new Map();

@@ -1,7 +1,11 @@
-import { SlashCommandBuilder, inlineCode } from "discord.js";
+import {
+  ChatInputCommandInteraction,
+  SlashCommandBuilder,
+  inlineCode,
+} from "discord.js";
 import { TriggerEvent } from "models/events";
 import { Command } from "modules/command";
-import { setups } from "modules/states";
+import { eventSetups } from "modules/states";
 
 export default new Command({
   data: new SlashCommandBuilder()
@@ -27,21 +31,31 @@ export default new Command({
         .setRequired(true)
     )
     .toJSON(),
+  checks: [
+    (interaction) => {
+      interaction = interaction as ChatInputCommandInteraction; // no autocomplete
+      if (eventSetups.has(interaction.user.id)) {
+        interaction.reply({
+          content:
+            "You must finish your current event setup before creating a new one",
+          ephemeral: true,
+        });
+        return false;
+      }
+      return true;
+    },
+  ],
   async run(interaction) {
-    if (setups.has(interaction.user.id))
-      return interaction.reply({
-        content:
-          "You must finish your current event setup before creating a new one",
-        ephemeral: true,
-      });
-
     const name = interaction.options.getString("name", true);
     const description = interaction.options.getString("description", true);
 
     const type = interaction.options.getString("type", true);
 
     if (type === "trigger")
-      setups.set(interaction.user.id, new TriggerEvent({ name, description }));
+      eventSetups.set(
+        interaction.user.id,
+        new TriggerEvent({ name, description })
+      );
 
     await interaction.reply({
       content:

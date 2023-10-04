@@ -1,7 +1,8 @@
 import { inlineCode } from "discord.js";
 import { IntervalTrigger } from "models/triggers";
+import { checkInSetup } from "modules/checks/eventSetup";
 import { Command } from "modules/command";
-import { setups } from "modules/states";
+import { eventSetups } from "modules/states";
 import { secondsToTime } from "modules/utils";
 import triggerCommand from "./trigger";
 
@@ -35,13 +36,8 @@ export default new Command({
       },
     ]);
   },
+  checks: [checkInSetup],
   async run(interaction) {
-    if (!setups.has(interaction.user.id))
-      return interaction.reply({
-        content: "You must setup an event before adding triggers",
-        ephemeral: true,
-      });
-
     const interval = interaction.options.getNumber("interval", true);
 
     if (interval < 0)
@@ -50,7 +46,7 @@ export default new Command({
         ephemeral: true,
       });
 
-    setups
+    eventSetups
       .get(interaction.user.id)!
       .triggers.push(new IntervalTrigger(interval * 1000));
 
