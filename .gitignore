@@ -133,5 +133,5 @@ dist
 config.ts
 
 # data
-data/
+data/*
 !data/.gitkeep
