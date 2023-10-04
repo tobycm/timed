@@ -36,8 +36,6 @@ class Event {
   }
 
   public async runOutputs(): Promise<void> {
-    console.log(this);
-
     for (const output of this.outputs) {
       output();
     }

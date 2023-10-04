@@ -56,8 +56,6 @@ export default new Command({
         channel.send(modalResult.fields.getTextInputValue("content"))
       );
 
-    console.log(eventSetups.get(interaction.user.id));
-
     modalResult.reply({
       content: "Message will be sent when the event is triggered.",
       ephemeral: true,
