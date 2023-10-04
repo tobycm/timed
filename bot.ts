@@ -81,10 +81,10 @@ export default class Bot extends Client {
   }
 }
 
-const folody = new Bot({
+const bot = new Bot({
   intents: Object.values(GatewayIntentBits) as GatewayIntentBits[],
   version: package_json.version,
   owners: config.bot.owners,
 });
 
-folody.login(config.bot.token);
+bot.login(config.bot.token);

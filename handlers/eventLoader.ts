@@ -6,15 +6,12 @@ import Event from "modules/event";
 
 const EVENT_DIR = "./events/"; // ko bỏ ./
 
-export default async function loadEvents(folody: Bot) {
+export default async function loadEvents(bot: Bot) {
   readdirSync(EVENT_DIR).forEach(async (file) => {
     const clientEvent = (await import(`.${EVENT_DIR}${file}`)).default as Event<
       keyof ClientEvents
     >;
     if (clientEvent.disabled) return;
-    (clientEvent.once ? folody.once : folody.on)(
-      clientEvent.event,
-      clientEvent.run
-    );
+    (clientEvent.once ? bot.once : bot.on)(clientEvent.event, clientEvent.run);
   });
 }

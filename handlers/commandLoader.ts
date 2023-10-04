@@ -5,7 +5,7 @@ import { Command } from "modules/command";
 
 const COMMANDS_FOLDER = "./commands/";
 
-export default async function loadCommands(folody: Bot) {
+export default async function loadCommands(bot: Bot) {
   async function loadCommand(root: string, item: string): Promise<any> {
     if (lstatSync(root + item).isDirectory()) {
       const newRoot = root + item + "/";
@@ -14,7 +14,7 @@ export default async function loadCommands(folody: Bot) {
       );
     }
     const command = (await import(`.${root}${item}`)).default as Command;
-    return folody.commands.set(command.data.name, command);
+    return bot.commands.set(command.data.name, command);
   }
 
   readdirSync(COMMANDS_FOLDER).forEach(async (item) =>
