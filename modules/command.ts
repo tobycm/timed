@@ -1,11 +1,11 @@
 import {
   AutocompleteInteraction,
   ChatInputCommandInteraction,
-  SlashCommandBuilder,
+  RESTPostAPIChatInputApplicationCommandsJSONBody,
 } from "discord.js";
 
 interface CommandOptions {
-  data: SlashCommandBuilder;
+  data: RESTPostAPIChatInputApplicationCommandsJSONBody;
   checks?: ((
     interaction: ChatInputCommandInteraction | AutocompleteInteraction
   ) => boolean | Promise<boolean>)[];

@@ -13,8 +13,9 @@ export default async function loadCommands(bot: Bot) {
         loadCommand(newRoot, item)
       );
     }
-    const command = (await import(`.${root}${item}`)).default as Command;
-    return bot.commands.set(command.data.name, command);
+    const command = (await import(`.${root}${item}`)).default;
+    if (command instanceof Command)
+      return bot.commands.set(command.data.name, command);
   }
 
   readdirSync(COMMANDS_FOLDER).forEach(async (item) =>
