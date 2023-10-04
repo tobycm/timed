@@ -1,4 +1,5 @@
-import { Events, SlashCommandBuilder } from "discord.js";
+import { Events } from "discord.js";
+import { Command } from "modules/command";
 import Event from "modules/event";
 
 export default new Event({
@@ -8,7 +9,7 @@ export default new Event({
 
     if (message.content !== "deploy") return;
 
-    const commands: SlashCommandBuilder[] = [];
+    const commands: (typeof Command.prototype.data)[] = [];
     message.client.commands.forEach((command) => commands.push(command.data));
     message.client.application?.commands.set(commands);
 
