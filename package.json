@@ -14,7 +14,8 @@
     "dependencies": {
         "better-sqlite3": "^8.5.0",
         "discord.js": "^14.12.1",
-        "quick.db": "^9.1.7"
+        "quick.db": "^9.1.7",
+        "re2": "^1.20.3"
     },
     "scripts": {
         "preinstall": "npx only-allow pnpm",

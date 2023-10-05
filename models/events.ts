@@ -5,7 +5,7 @@ interface EventOptions {
   description: string;
   outputs?: (() => Promise<any>)[];
 }
-class Event {
+export class Event {
   constructor(options: EventOptions) {
     this.name = options.name;
     this.description = options.description;
