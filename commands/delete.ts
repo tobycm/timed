@@ -58,7 +58,7 @@ export default new Command({
     events.get(interaction.user.id)!.get(interaction.options.getString("event")!)!.start();
 
     interaction.reply({
-      content: "Started event",
+      content: "Deleted event",
       ephemeral: true,
     });
   },
