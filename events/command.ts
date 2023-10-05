@@ -5,8 +5,7 @@ import { UserError } from "modules/exceptions/base";
 export default new Event({
   event: Events.InteractionCreate,
   async run(interaction) {
-    if (!interaction.isChatInputCommand() && !interaction.isAutocomplete())
-      return;
+    if (!interaction.isChatInputCommand() && !interaction.isAutocomplete()) return;
 
     if (interaction.user.bot) return;
 
@@ -14,14 +13,7 @@ export default new Event({
     if (!command) return;
 
     if (command.disabled) {
-      if (interaction.isAutocomplete())
-        return interaction.respond([
-          {
-            name: "Lệnh này đã bị tắt",
-            value: "Lệnh này đã bị tắt",
-          },
-        ]);
-
+      if (interaction.isAutocomplete()) return interaction.respond([]);
       return interaction.reply("Lệnh này đã bị tắt");
     }
 
@@ -30,8 +22,7 @@ export default new Event({
 
       for (const check of command.checks) {
         try {
-          const ok = await check(interaction);
-          if (!ok) return;
+          if (!(await check(interaction))) return;
         } catch (error) {
           if (error instanceof UserError)
             return interaction.respond([
@@ -47,17 +38,16 @@ export default new Event({
         await command.completion(interaction);
       } catch (error) {
         interaction.client.reportError(error as Error);
+        interaction.respond([]);
       }
     }
 
     if (interaction.isChatInputCommand()) {
       for (const check of command.checks) {
         try {
-          const ok = await check(interaction);
-          if (!ok) return;
+          if (!(await check(interaction))) return;
         } catch (error) {
-          if (error instanceof UserError)
-            return interaction.reply(error.message);
+          if (error instanceof UserError) return interaction.reply(error.message);
         }
       }
 
@@ -66,8 +56,7 @@ export default new Event({
       } catch (error) {
         if (error instanceof UserError) return interaction.reply(error.message);
 
-        if (!interaction.replied)
-          interaction.reply("Có lỗi xảy ra khi chạy lệnh này :<");
+        if (!interaction.replied) interaction.reply("Có lỗi xảy ra khi chạy lệnh này :<");
         else interaction.followUp("Có lỗi xảy ra khi chạy lệnh này :<");
         interaction.client.reportError(error as Error);
       }

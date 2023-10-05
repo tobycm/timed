@@ -1,18 +1,13 @@
-import { ChatInputCommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ChatInputCommandInteraction, SlashCommandBuilder, chatInputApplicationCommandMention } from "discord.js";
 import { Command } from "modules/command";
 import { events } from "modules/states";
 
 export default new Command({
   data: new SlashCommandBuilder()
-    .setName("start")
-    .setDescription("Start an event")
-    .addStringOption((option) =>
-      option
-        .setName("event")
-        .setDescription("The name of the event to start")
-        .setRequired(true)
-        .setAutocomplete(true),
-    )
+    .setName("delete")
+    .setDescription("Delete an event")
+    .addStringOption((option) => option.setName("event").setDescription("The name of the event to delete").setRequired(true).setAutocomplete(true))
+    .addBooleanOption((option) => option.setName("force").setDescription("Force delete the event").setRequired(false))
     .toJSON(),
   checks: [
     (interaction) => {
@@ -22,9 +17,11 @@ export default new Command({
 
           if (interaction.isAutocomplete()) return true;
 
-          const eventName = interaction.options.getString("event", true);
-
-          if (events.get(interaction.user.id)!.get(eventName)?.running) return false;
+          if (
+            events.get(interaction.user.id)!.get(interaction.options.getString("event", true))?.running &&
+            !interaction.options.getBoolean("force", false)
+          )
+            return false;
 
           return true;
         })()
@@ -33,7 +30,10 @@ export default new Command({
       else {
         if (interaction instanceof ChatInputCommandInteraction)
           interaction.reply({
-            content: "You already have a running event",
+            content: `Can't delete this event. Try using ${chatInputApplicationCommandMention(
+              "stop",
+              interaction.client.application.commands.cache.get("stop")?.id ?? "", // wow
+            )} first`,
             ephemeral: true,
           });
         else interaction.respond([]);
@@ -45,7 +45,10 @@ export default new Command({
     const eventNames: string[] = [];
 
     events.get(interaction.user.id)!.forEach((event, name) => {
-      if (!event.running && event.name.startsWith(interaction.options.getString("event", true)))
+      if (
+        (!event.running || (event.running && interaction.options.getBoolean("force"))) &&
+        event.name.startsWith(interaction.options.getString("event", true))
+      )
         eventNames.push(name);
     });
 
@@ -60,5 +63,3 @@ export default new Command({
     });
   },
 });
-
-// fun fact: copilot wrote all of this in 30 seconds

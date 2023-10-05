@@ -14,7 +14,7 @@ export default new Event({
       message.client.commands.forEach((command) => commands.push(command.data));
       message.client.application?.commands.set(commands);
 
-      return message.reply("Đã deploy slash commands");
+      return message.reply("Deployed");
     }
 
     return message.reply("hi :3");

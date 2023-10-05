@@ -11,23 +11,23 @@ export default new Command({
         .setName("event")
         .setDescription("The name of the event to stop")
         .setRequired(true)
-        .setAutocomplete(true)
+        .setAutocomplete(true),
     )
     .toJSON(),
   checks: [
     (interaction) => {
       if (
-        () => {
+        (() => {
           if (!events.has(interaction.user.id)) return false;
 
-          const eventName = interaction.options.getString("event");
-          if (!eventName) return false;
+          if (interaction.isAutocomplete()) return true;
 
-          if (!events.get(interaction.user.id)?.get(eventName)?.running)
-            return false;
+          const eventName = interaction.options.getString("event", true);
+
+          if (!events.get(interaction.user.id)!.get(eventName)?.running) return false;
 
           return true;
-        }
+        })()
       )
         return true;
       else {
@@ -42,18 +42,17 @@ export default new Command({
     },
   ],
   async completion(interaction) {
-    const eventNames = Array.from(
-      events.get(interaction.user.id)!.keys()
-    ).filter((name) =>
-      name.startsWith(interaction.options.getString("event")!)
-    ); // good?
+    const eventNames: string[] = [];
+
+    events.get(interaction.user.id)!.forEach((event, name) => {
+      if (event.running && event.name.startsWith(interaction.options.getString("event", true)))
+        eventNames.push(name);
+    });
+
     interaction.respond(eventNames.map((name) => ({ name, value: name })));
   },
   async run(interaction) {
-    events
-      .get(interaction.user.id)!
-      .get(interaction.options.getString("event")!)!
-      .stop();
+    events.get(interaction.user.id)!.get(interaction.options.getString("event")!)!.stop();
 
     interaction.reply({
       content: "Stopped event",

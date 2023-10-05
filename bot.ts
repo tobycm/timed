@@ -1,13 +1,6 @@
 import { readFileSync } from "fs";
 
-import {
-  Client,
-  ClientOptions,
-  EmbedBuilder,
-  GatewayIntentBits,
-  Snowflake,
-  codeBlock,
-} from "discord.js";
+import { Client, ClientOptions, EmbedBuilder, GatewayIntentBits, Snowflake, codeBlock } from "discord.js";
 
 import { QuickDB } from "quick.db";
 
@@ -55,9 +48,6 @@ export default class Bot extends Client {
     this.owners = options.owners || [];
     this.commands = new Map();
     this.db = database;
-
-    loadEvents(this);
-    loadCommands(this);
   }
 
   public readonly version: string;
@@ -86,5 +76,8 @@ const bot = new Bot({
   version: package_json.version,
   owners: config.bot.owners,
 });
+
+await loadEvents(bot);
+await loadCommands(bot);
 
 bot.login(config.bot.token);

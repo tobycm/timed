@@ -7,7 +7,7 @@ import {
 interface CommandOptions {
   data: RESTPostAPIChatInputApplicationCommandsJSONBody;
   checks?: ((
-    interaction: ChatInputCommandInteraction | AutocompleteInteraction
+    interaction: ChatInputCommandInteraction | AutocompleteInteraction,
   ) => boolean | Promise<boolean>)[];
   run: (interaction: ChatInputCommandInteraction) => Promise<any>;
   completion?: (interaction: AutocompleteInteraction) => Promise<any>;

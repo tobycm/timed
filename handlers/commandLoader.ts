@@ -9,20 +9,17 @@ export default async function loadCommands(bot: Bot) {
   async function loadCommand(root: string, item: string): Promise<any> {
     if (lstatSync(root + item).isDirectory()) {
       const newRoot = root + item + "/";
-      return readdirSync(newRoot).forEach(async (item) =>
-        loadCommand(newRoot, item)
-      );
+
+      for (const item of readdirSync(newRoot)) await loadCommand(newRoot, item);
+      return;
     }
 
     if (!item.endsWith(".ts")) return;
 
     const command = (await import(`.${root}${item}`)).default;
 
-    if (command instanceof Command)
-      return bot.commands.set(command.data.name, command);
+    if (command instanceof Command) return bot.commands.set(command.data.name, command);
   }
 
-  readdirSync(COMMANDS_FOLDER).forEach(async (item) =>
-    loadCommand(COMMANDS_FOLDER, item)
-  );
+  for (const item of readdirSync(COMMANDS_FOLDER)) await loadCommand(COMMANDS_FOLDER, item);
 }
