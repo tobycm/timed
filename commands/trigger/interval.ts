@@ -1,36 +1,22 @@
-import { inlineCode } from "discord.js";
+import { SlashCommandBuilder, inlineCode } from "discord.js";
 import { IntervalTrigger } from "models/triggers";
 import { checkInSetup } from "modules/checks/eventSetup";
 import { Command } from "modules/command";
 import { eventSetups } from "modules/states";
 import { secondsToTime } from "modules/utils";
-import triggerCommand from "./trigger";
 
 export default new Command({
-  data: triggerCommand
-    .addSubcommand((subcommand) =>
-      subcommand
+  data: new SlashCommandBuilder()
+    .setName("trigger_interval")
+    .setDescription("Add an interval trigger")
+    .addNumberOption((option) =>
+      option
         .setName("interval")
-        .setDescription("Add an interval trigger")
-        .addNumberOption((option) =>
-          option
-            .setName("interval")
-            .setDescription("Seconds")
-            .setAutocomplete(true)
-            .setRequired(true)
-        )
+        .setDescription("Seconds")
+        .setAutocomplete(true)
+        .setRequired(true)
     )
     .toJSON(),
-  async completion(interaction) {
-    const interval = interaction.options.getNumber("interval", true);
-
-    interaction.respond([
-      {
-        name: `Interval: ${secondsToTime(interval)}`,
-        value: interval,
-      },
-    ]);
-  },
   checks: [
     checkInSetup,
     async (interaction) => {
@@ -48,6 +34,16 @@ export default new Command({
       return false;
     },
   ],
+  async completion(interaction) {
+    const interval = interaction.options.getNumber("interval", true);
+
+    interaction.respond([
+      {
+        name: `Interval: ${secondsToTime(interval)}`,
+        value: interval,
+      },
+    ]);
+  },
   async run(interaction) {
     const interval = interaction.options.getNumber("interval", true);
 

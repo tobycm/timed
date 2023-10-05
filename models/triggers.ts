@@ -64,7 +64,7 @@ export class MessageTrigger extends Trigger {
       this.filterSignature = randomString(10);
     } while (messageTriggers.has(this.filterSignature));
 
-    messageTriggers.set(this.filterSignature, this.filter);
+    messageTriggers.set(this.filterSignature, this.filter.bind(this));
     return;
   }
 

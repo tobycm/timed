@@ -1,29 +1,25 @@
-import { ChannelType } from "discord.js";
+import { ChannelType, SlashCommandBuilder } from "discord.js";
 import { MessageFilter, MessageTrigger } from "models/triggers";
 import { checkInSetup } from "modules/checks/eventSetup";
 import { guildOnly } from "modules/checks/guild";
 import { Command } from "modules/command";
 import { eventSetups } from "modules/states";
-import triggerCommand from "./trigger";
 
 export default new Command({
-  data: triggerCommand
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("message")
-        .setDescription("Add a message trigger")
-        .addUserOption((option) =>
-          option.setName("user").setDescription("Only from this user")
-        )
-        .addChannelOption((option) =>
-          option
-            .setName("channel")
-            .setDescription("Only from this channel")
-            .addChannelTypes(ChannelType.GuildText)
-        )
-        .addRoleOption((option) =>
-          option.setName("role").setDescription("Only from this role")
-        )
+  data: new SlashCommandBuilder()
+    .setName("trigger_message")
+    .setDescription("Add a message trigger")
+    .addUserOption((option) =>
+      option.setName("user").setDescription("Only from this user")
+    )
+    .addChannelOption((option) =>
+      option
+        .setName("channel")
+        .setDescription("Only from this channel")
+        .addChannelTypes(ChannelType.GuildText)
+    )
+    .addRoleOption((option) =>
+      option.setName("role").setDescription("Only from this role")
     )
     .toJSON(),
   checks: [checkInSetup, guildOnly],

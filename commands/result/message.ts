@@ -2,28 +2,26 @@ import {
   ActionRowBuilder,
   ChannelType,
   ModalBuilder,
+  SlashCommandBuilder,
   TextInputBuilder,
   TextInputStyle,
 } from "discord.js";
 import { checkInSetup } from "modules/checks/eventSetup";
 import { Command } from "modules/command";
 import { eventSetups } from "modules/states";
-import resultCommand from "./result";
 
 export default new Command({
-  data: resultCommand
-    .addSubcommand((subcommand) =>
-      subcommand
-        .setName("message")
-        .setDescription("Send a message to a channel")
-        .addChannelOption((option) =>
-          option
-            .setName("channel")
-            .setDescription("Channel to send the message")
-            .setRequired(true)
-            .addChannelTypes(ChannelType.GuildText)
-        )
+  data: new SlashCommandBuilder()
+    .setName("result_message")
+    .setDescription("Send a message to a channel")
+    .addChannelOption((option) =>
+      option
+        .setName("channel")
+        .setDescription("Channel to send the message")
+        .setRequired(true)
+        .addChannelTypes(ChannelType.GuildText)
     )
+
     .toJSON(),
   checks: [checkInSetup],
   async run(interaction) {
