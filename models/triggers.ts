@@ -1,4 +1,4 @@
-import { Message, User } from "discord.js";
+import { Message } from "discord.js";
 import { messageTriggers } from "events/messageTrigger";
 import { randomString } from "modules/utils";
 
@@ -30,13 +30,30 @@ export class IntervalTrigger extends Trigger {
   }
 }
 
-class MessageTrigger extends Trigger {
-  constructor() {
+export type MessageFilter = (
+  message: Message<true>
+) => Promise<boolean> | boolean;
+
+export class MessageTrigger extends Trigger {
+  constructor(filters?: MessageFilter[]) {
     super();
+    this.filters = filters ?? [];
+  }
+
+  protected filters: MessageFilter[];
+  public addFilter(filter: MessageFilter) {
+    this.filters.push(filter);
+  }
+
+  public removeFilter(filter: MessageFilter) {
+    this.filters = this.filters.filter((f) => f !== filter);
   }
 
   protected filterSignature = "";
-  protected async filter(message: Message): Promise<any> {
+  protected async filter(message: Message<true>): Promise<any> {
+    for (const filter of this.filters) {
+      if (!(await filter(message))) return;
+    }
     this.trigger();
   }
 
@@ -53,15 +70,5 @@ class MessageTrigger extends Trigger {
 
   async stop(): Promise<void> {
     messageTriggers.delete(this.filterSignature);
-  }
-}
-
-export class MessageAuthorTrigger extends MessageTrigger {
-  constructor(author: User) {
-    super();
-
-    this.filter = async (message: Message) => {
-      if (message.author.id === author.id) this.trigger();
-    };
   }
 }
