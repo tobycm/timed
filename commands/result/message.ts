@@ -1,11 +1,5 @@
-import {
-  ActionRowBuilder,
-  ChannelType,
-  ModalBuilder,
-  SlashCommandBuilder,
-  TextInputBuilder,
-  TextInputStyle,
-} from "discord.js";
+import { ActionRowBuilder, ChannelType, ModalBuilder, SlashCommandBuilder, TextInputBuilder, TextInputStyle } from "discord.js";
+import { Event } from "models/events";
 import { checkInSetup } from "modules/checks/eventSetup";
 import { Command } from "modules/command";
 import { eventSetups } from "modules/states";
@@ -15,19 +9,13 @@ export default new Command({
     .setName("result_message")
     .setDescription("Send a message to a channel")
     .addChannelOption((option) =>
-      option
-        .setName("channel")
-        .setDescription("Channel to send the message")
-        .setRequired(true)
-        .addChannelTypes(ChannelType.GuildText)
+      option.setName("channel").setDescription("Channel to send the message").setRequired(true).addChannelTypes(ChannelType.GuildText),
     )
 
     .toJSON(),
-  checks: [checkInSetup],
+  checks: [checkInSetup(Event)],
   async run(interaction) {
-    const channel = interaction.options.getChannel("channel", true, [
-      ChannelType.GuildText,
-    ]);
+    const channel = interaction.options.getChannel("channel", true, [ChannelType.GuildText]);
 
     const modal = new ModalBuilder()
       .setCustomId("modal")
@@ -39,8 +27,8 @@ export default new Command({
             .setLabel("Message content")
             .setRequired(true)
             .setStyle(TextInputStyle.Paragraph)
-            .setMinLength(1)
-        )
+            .setMinLength(1),
+        ),
       );
 
     await interaction.showModal(modal);
@@ -48,11 +36,7 @@ export default new Command({
       time: 1000 * 60 * 30,
     });
 
-    eventSetups
-      .get(interaction.user.id)!
-      .addOutput(() =>
-        channel.send(modalResult.fields.getTextInputValue("content"))
-      );
+    eventSetups.get(interaction.user.id)!.addOutput(() => channel.send(modalResult.fields.getTextInputValue("content")));
 
     modalResult.reply({
       content: "Message will be sent when the event is triggered.",
