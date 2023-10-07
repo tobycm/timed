@@ -24,11 +24,13 @@ import { Command } from "modules/command";
 
 const package_json = JSON.parse(readFileSync("./package.json", "utf-8"));
 
+type CommandMap = Map<string, Map<string, Command> | Command>; // commandName -> Command | subcommandName -> Command
+
 declare module "discord.js" {
   interface Client {
     version: string;
     owners: Snowflake[];
-    commands: Map<string, Command>;
+    commands: CommandMap;
     db: QuickDB;
 
     reportError(error: Error): Promise<void>;
@@ -52,7 +54,7 @@ export default class Bot extends Client {
 
   public readonly version: string;
   public readonly owners: Snowflake[];
-  public readonly commands: Map<string, Command>;
+  public readonly commands: CommandMap;
   public readonly db: QuickDB;
 
   public async reportError(error: Error): Promise<void> {

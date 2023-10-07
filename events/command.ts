@@ -1,4 +1,5 @@
 import { Events } from "discord.js";
+import { Command } from "modules/command";
 import Event from "modules/event";
 import { UserError } from "modules/exceptions/base";
 
@@ -9,8 +10,13 @@ export default new Event({
 
     if (interaction.user.bot) return;
 
-    const command = interaction.client.commands.get(interaction.commandName);
+    let command: Command | Map<string, Command> | undefined = interaction.client.commands.get(interaction.commandName);
     if (!command) return;
+
+    if (command instanceof Map) {
+      command = command.get(interaction.options.getSubcommand());
+      if (!command) return;
+    }
 
     if (command.disabled) {
       if (interaction.isAutocomplete()) return interaction.respond([]);
