@@ -30,9 +30,7 @@ export class IntervalTrigger extends Trigger {
   }
 }
 
-export type MessageFilter = (
-  message: Message<true>
-) => Promise<boolean> | boolean;
+export type MessageFilter = (message: Message<true>) => Promise<boolean> | boolean;
 
 export class MessageTrigger extends Trigger {
   constructor(filters?: MessageFilter[]) {
@@ -51,18 +49,16 @@ export class MessageTrigger extends Trigger {
 
   protected filterSignature = "";
   protected async filter(message: Message<true>): Promise<any> {
-    for (const filter of this.filters) {
-      if (!(await filter(message))) return;
-    }
+    for (const filter of this.filters) if (!(await filter(message))) return;
+
     this.trigger();
   }
 
   async start(trigger: () => any): Promise<void> {
     this.trigger = trigger;
 
-    do {
-      this.filterSignature = randomString(10);
-    } while (messageTriggers.has(this.filterSignature));
+    do this.filterSignature = randomString(10);
+    while (messageTriggers.has(this.filterSignature));
 
     messageTriggers.set(this.filterSignature, this.filter.bind(this));
     return;

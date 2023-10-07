@@ -1,15 +1,8 @@
-import {
-  AutocompleteInteraction,
-  ChatInputCommandInteraction,
-  PermissionResolvable,
-} from "discord.js";
+import { AutocompleteInteraction, ChatInputCommandInteraction, PermissionResolvable } from "discord.js";
 import { NoPermissions } from "modules/exceptions/guild";
 
-export function checkOwner(
-  interaction: ChatInputCommandInteraction | AutocompleteInteraction
-) {
-  if (!interaction.client.owners.includes(interaction.user.id))
-    throw new NoPermissions();
+export function checkOwner(interaction: ChatInputCommandInteraction | AutocompleteInteraction) {
+  if (!interaction.client.owners.includes(interaction.user.id)) throw new NoPermissions();
 
   return true;
 }

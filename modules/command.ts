@@ -1,14 +1,8 @@
-import {
-  AutocompleteInteraction,
-  ChatInputCommandInteraction,
-  RESTPostAPIChatInputApplicationCommandsJSONBody,
-} from "discord.js";
+import { AutocompleteInteraction, ChatInputCommandInteraction, RESTPostAPIChatInputApplicationCommandsJSONBody } from "discord.js";
 
 interface CommandOptions {
   data: RESTPostAPIChatInputApplicationCommandsJSONBody;
-  checks?: ((
-    interaction: ChatInputCommandInteraction | AutocompleteInteraction,
-  ) => boolean | Promise<boolean>)[];
+  checks?: ((interaction: ChatInputCommandInteraction | AutocompleteInteraction) => boolean | Promise<boolean>)[];
   run: (interaction: ChatInputCommandInteraction) => Promise<any>;
   completion?: (interaction: AutocompleteInteraction) => Promise<any>;
   disabled?: boolean;

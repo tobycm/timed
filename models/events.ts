@@ -36,9 +36,7 @@ export class Event {
   }
 
   public async runOutputs(): Promise<void> {
-    for (const output of this.outputs) {
-      output();
-    }
+    for (const output of this.outputs) output();
   }
 
   public async start(): Promise<void> {

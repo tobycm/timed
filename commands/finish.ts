@@ -3,10 +3,7 @@ import { Command } from "modules/command";
 import { eventSetups, events } from "modules/states";
 
 export default new Command({
-  data: new SlashCommandBuilder()
-    .setName("finish")
-    .setDescription("Finish an event setup")
-    .toJSON(),
+  data: new SlashCommandBuilder().setName("finish").setDescription("Finish an event setup").toJSON(),
   async run(interaction) {
     if (!eventSetups.has(interaction.user.id))
       return interaction.reply({
@@ -20,8 +17,7 @@ export default new Command({
 
     eventSetups.delete(interaction.user.id);
 
-    if (!events.has(interaction.user.id))
-      events.set(interaction.user.id, new Map());
+    if (!events.has(interaction.user.id)) events.set(interaction.user.id, new Map());
     events.get(interaction.user.id)!.set(event.name, event);
 
     interaction.reply({
