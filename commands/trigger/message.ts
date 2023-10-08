@@ -21,10 +21,7 @@ export default new Command({
     const role = interaction.options.getRole("role");
 
     if (!user && !channel && !role) {
-      interaction.reply({
-        content: "You must specify a user, channel, or role",
-        ephemeral: true,
-      });
+      interaction.reply({ content: "You must specify a user, channel, or role", ephemeral: true });
       return;
     }
 
@@ -36,9 +33,6 @@ export default new Command({
 
     (eventSetups.get(interaction.user.id) as TriggerEvent).addTrigger(new MessageTrigger(filters));
 
-    interaction.reply({
-      content: "Added message trigger",
-      ephemeral: true,
-    });
+    interaction.reply({ content: "Added message trigger", ephemeral: true });
   },
 });
