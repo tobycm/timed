@@ -1,8 +1,8 @@
-export function secondsToTime(rawSeconds: number, colons?: true, doubleZeroInMinute?: true) {
+export function secondsToTime(rawSeconds: number, colons?: true, doubleZeroInMinute?: true, day?: true): string {
   rawSeconds = Math.round(rawSeconds); // cho chắc
 
-  const days = Math.floor(rawSeconds / 86400);
-  const hours = Math.floor(rawSeconds / 3600);
+  const days = day ? Math.floor(rawSeconds / 86400) : 0;
+  const hours = Math.floor((rawSeconds - days * 86400) / 3600);
   const minutes = Math.floor((rawSeconds - hours * 3600) / 60);
   const seconds = rawSeconds - hours * 3600 - minutes * 60;
 

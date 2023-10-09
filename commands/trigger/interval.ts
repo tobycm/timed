@@ -28,13 +28,13 @@ export default new Command({
   async completion(interaction) {
     const interval = interaction.options.getNumber("interval", true);
 
-    interaction.respond([{ name: `Interval: ${secondsToTime(interval)}`, value: interval }]);
+    interaction.respond([{ name: `Interval: ${secondsToTime(interval, undefined, undefined, true)}`, value: interval }]);
   },
   async run(interaction) {
     const interval = interaction.options.getNumber("interval", true);
 
     (eventSetups.get(interaction.user.id) as TriggerEvent).addTrigger(new IntervalTrigger(interval * 1000));
 
-    interaction.reply({ content: `Added interval trigger ${inlineCode(secondsToTime(interval))}`, ephemeral: true });
+    interaction.reply({ content: `Added interval trigger ${inlineCode(secondsToTime(interval, undefined, undefined, true))}`, ephemeral: true });
   },
 });
